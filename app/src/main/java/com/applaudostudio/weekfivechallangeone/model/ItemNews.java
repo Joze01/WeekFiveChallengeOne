@@ -6,6 +6,8 @@ import android.os.Parcelable;
 public class ItemNews implements Parcelable {
     private String mTitle;
     private String mThumbnailUrl;
+    private String mTextBody;
+    private String mWebUrl;
 
     public String getmTitle() {
         return mTitle;
@@ -39,8 +41,6 @@ public class ItemNews implements Parcelable {
         this.mWebUrl = mWebUrl;
     }
 
-    private String mTextBody;
-    private String mWebUrl;
 
     public ItemNews() {
     }

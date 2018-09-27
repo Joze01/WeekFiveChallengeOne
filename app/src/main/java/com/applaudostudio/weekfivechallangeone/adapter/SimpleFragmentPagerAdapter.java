@@ -19,13 +19,14 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.applaudostudio.weekfivechallangeone.fragment.FeedNewFragment;
 
 /**
  * Provides the appropriate {@link Fragment} for a view pager.
  */
-public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
+public class SimpleFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     final int PAGE_COUNT = 6;
     private String tabTitles[] = new String[] { "NATIONAL", "INTERNATIONAL", "ENTERTAINMENT", "TECHNOLOGY", "SPORT", "LIFE" };
@@ -41,10 +42,8 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if(position==1){
-            return FeedNewFragment.newInstance(position+1);
-        }
-        return FeedNewFragment.newInstance(position + 1);
+
+        return FeedNewFragment.newInstance(tabTitles[position]);
 
     }
 
