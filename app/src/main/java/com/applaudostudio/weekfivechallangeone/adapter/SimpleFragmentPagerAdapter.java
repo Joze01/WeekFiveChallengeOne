@@ -29,22 +29,18 @@ import com.applaudostudio.weekfivechallangeone.fragment.FeedNewFragment;
 public class SimpleFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     final int PAGE_COUNT = 6;
-    private String tabTitles[] = new String[] { "NATIONAL", "INTERNATIONAL", "ENTERTAINMENT", "TECHNOLOGY", "SPORT", "LIFE" };
+    private String tabTitles[] = new String[]{"NATIONAL", "INTERNATIONAL", "ENTERTAINMENT", "TECHNOLOGY", "SPORT", "LIFE"};
     private Context context;
-
-
+    private String mCategory;
 
     public SimpleFragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
-
     }
 
     @Override
     public Fragment getItem(int position) {
-
         return FeedNewFragment.newInstance(tabTitles[position]);
-
     }
 
     @Override

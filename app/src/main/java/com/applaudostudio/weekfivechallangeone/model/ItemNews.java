@@ -1,5 +1,6 @@
 package com.applaudostudio.weekfivechallangeone.model;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,6 +9,7 @@ public class ItemNews implements Parcelable {
     private String mThumbnailUrl;
     private String mTextBody;
     private String mWebUrl;
+
 
     public String getmTitle() {
         return mTitle;
@@ -43,7 +45,12 @@ public class ItemNews implements Parcelable {
 
 
     public ItemNews() {
+        this.mTextBody="";
+        this.mTitle="";
+        this.mThumbnailUrl="";
+        this.mWebUrl="";
     }
+
 
     @Override
     public int describeContents() {
@@ -65,7 +72,7 @@ public class ItemNews implements Parcelable {
         this.mWebUrl = in.readString();
     }
 
-    public static final Parcelable.Creator<ItemNews> CREATOR = new Parcelable.Creator<ItemNews>() {
+    public static final Creator<ItemNews> CREATOR = new Creator<ItemNews>() {
         @Override
         public ItemNews createFromParcel(Parcel source) {
             return new ItemNews(source);

@@ -15,6 +15,7 @@
  */
 package com.applaudostudio.weekfivechallangeone.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.applaudostudio.weekfivechallangeone.R;
+import com.applaudostudio.weekfivechallangeone.activity.DetailActivity;
 import com.applaudostudio.weekfivechallangeone.adapter.NewsListAdapter;
 import com.applaudostudio.weekfivechallangeone.loader.LoaderNewsAsync;
 import com.applaudostudio.weekfivechallangeone.model.ItemNews;
@@ -37,7 +39,6 @@ import com.applaudostudio.weekfivechallangeone.util.JSONParserItem;
 import com.applaudostudio.weekfivechallangeone.util.UrlManager;
 
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,10 +48,9 @@ import java.util.List;
 public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> , NewsListAdapter.ItemSelectedListener{
     public static final String ARG_PAGE = "ARG_PAGE";
     private String mPage;
-    private String categoryText;
+    private String mCategoryText;
     private RecyclerView mRecyclerViewNews;
     private NewsListAdapter mAdapterNews;
-
     private List<ItemNews> mNewsList;
 
 
@@ -76,9 +76,7 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         TextView txtParam = (TextView) v.findViewById(R.id.textView);
         txtParam.setText("# Fragment" + mPage);
         mRecyclerViewNews= v.findViewById(R.id.recyclerNews);
-
-
-        categoryText=mPage;
+        mCategoryText =mPage;
         return v;
     }
 
@@ -102,7 +100,7 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
         UrlManager urlGenrator = new UrlManager();
-        return new LoaderNewsAsync(getActivity(),urlGenrator.createFirstLoadUrl(categoryText));
+        return new LoaderNewsAsync(getActivity(),urlGenrator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_JSON,mCategoryText,0,true));
     }
 
     @Override
@@ -110,9 +108,8 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         JSONParserItem parser = new JSONParserItem();
         mNewsList=parser.getNewList(data);
 
-        mAdapterNews = new NewsListAdapter(mNewsList,this);
+        mAdapterNews = new NewsListAdapter(mNewsList,this,getLoaderManager());
         mRecyclerViewNews.setAdapter(mAdapterNews);
-
     }
 
     @Override
@@ -124,5 +121,8 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onClickNewsDetail(ItemNews item) {
 
+        Intent intent = new Intent(getActivity(), DetailActivity.class);
+        intent.putExtra(DetailActivity.EXTRA_ITEM,item);
+        startActivity(intent);
     }
 }

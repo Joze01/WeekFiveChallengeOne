@@ -1,5 +1,7 @@
 package com.applaudostudio.weekfivechallangeone.adapter;
 
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -10,23 +12,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.applaudostudio.weekfivechallangeone.R;
+import com.applaudostudio.weekfivechallangeone.loader.apiclient.GuardianApiClient;
 import com.applaudostudio.weekfivechallangeone.model.ItemNews;
-
+import com.applaudostudio.weekfivechallangeone.util.DataInterpreter;
+import com.applaudostudio.weekfivechallangeone.util.UrlManager;
 
 import java.util.List;
 
-public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.RadioViewHolder> {
+public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsViewHolder> {
     private List<ItemNews> mDataSet;
     private final ItemSelectedListener mCallback;
+    android.support.v4.app.LoaderManager mManager;
 
     /***
      * Constructor to set data set and a callback for the SelectedItem listener
      * @param mDataSet Data with the news items
      * @param callback callback for the item selected.
      */
-    public NewsListAdapter(List<ItemNews> mDataSet, ItemSelectedListener callback) {
+    public NewsListAdapter(List<ItemNews> mDataSet, ItemSelectedListener callback, android.support.v4.app.LoaderManager manager) {
         this.mDataSet = mDataSet;
-        mCallback=callback;
+        mCallback = callback;
+        mManager = manager;
     }
 
     /***
@@ -37,9 +43,9 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.RadioV
      */
     @NonNull
     @Override
-    public RadioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public NewsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_newslist, parent, false);
-        return new RadioViewHolder(view);
+        return new NewsViewHolder(view);
     }
 
     /***
@@ -48,13 +54,13 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.RadioV
      * @param i item index
      */
     @Override
-    public void onBindViewHolder(@NonNull NewsListAdapter.RadioViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull NewsListAdapter.NewsViewHolder viewHolder, int i) {
         viewHolder.bindData(mDataSet.get(i));
     }
 
     /***
      * function to get the data set size.
-     * @return  number of item of the dataset
+     * @return number of item of the dataset
      */
     @Override
     public int getItemCount() {
@@ -65,17 +71,16 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.RadioV
     /***
      * Class for the news View holder
      */
-    class RadioViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView mImagenDownload;
         private TextView mTxtHeadline;
         private ConstraintLayout mItemElements;
-        RadioViewHolder(@NonNull View itemView) {
+        //private Bitmap mImagenMap;
+        NewsViewHolder(@NonNull View itemView) {
             super(itemView);
-
             mItemElements = itemView.findViewById(R.id.containerList);
-            mTxtHeadline=itemView.findViewById(R.id.textViewHeadline);
-            mImagenDownload=itemView.findViewById(R.id.imageViewThumbnail);
-
+            mTxtHeadline = itemView.findViewById(R.id.textViewHeadline);
+            mImagenDownload = itemView.findViewById(R.id.imageViewThumbnail);
             mItemElements.setOnClickListener(this);
         }
 
@@ -88,6 +93,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.RadioV
             switch (view.getId()) {
                 case R.id.containerList:
                     if (mCallback != null) {
+                        //mDataSet.get(getAdapterPosition()).setImageMap(mImagenMap);
                         mCallback.onClickNewsDetail(mDataSet.get(getAdapterPosition()));
                     }
                     break;
@@ -98,10 +104,29 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.RadioV
          * Function to bind the data to the view element
          * @param item
          */
-        private void bindData(ItemNews item){
+        private void bindData(ItemNews item) {
             mTxtHeadline.setText(item.getmTitle());
+            mImagenDownload.setImageResource(R.drawable.ic_launcher_background);
+            new AsyncLoadImage().execute(item.getmThumbnailUrl());
         }
 
+        class AsyncLoadImage extends AsyncTask<String, Void, Bitmap> {
+            @Override
+            protected Bitmap doInBackground(String... strings) {
+                UrlManager urlManager = new UrlManager();
+                GuardianApiClient client = new GuardianApiClient();
+                DataInterpreter interpreter = new DataInterpreter();
+
+                return interpreter.streamToBitMap(client.makeHttpRequest(urlManager.GenerateURLByElement(UrlManager.ELEMENT_TYPE_IMAGE, strings[0], 0, false)));
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                //mImagenMap=bitmap;
+                mImagenDownload.setImageBitmap(bitmap);
+            }
+        }
     }
 
     /***

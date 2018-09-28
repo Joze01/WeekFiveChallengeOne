@@ -13,7 +13,7 @@ import java.util.List;
 
 public class JSONParserItem {
     public List<ItemNews> getNewList(String jsonString) {
-        List<ItemNews> resultlList = new ArrayList<>();
+        List<ItemNews> resultList = new ArrayList<>();
         try {
             JSONObject baseJsonResponse = new JSONObject(jsonString);
             JSONObject responseObject = baseJsonResponse.getJSONObject("response");
@@ -32,14 +32,13 @@ public class JSONParserItem {
                         itemNews.setmThumbnailUrl(properties.getString("thumbnail"));
                     if (properties.has("webUrl"))
                         itemNews.setmWebUrl(firstFeature.getString("webUrl"));
-                    resultlList.add(itemNews);
+                    resultList.add(itemNews);
                 }
             }
         } catch (JSONException e) {
             Log.e("ERROR_PARSING", "Problem parsing the ITEM JSON results", e);
         }
-
-        return resultlList;
+        return resultList;
     }
 
 

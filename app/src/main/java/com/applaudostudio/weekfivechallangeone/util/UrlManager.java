@@ -45,7 +45,6 @@ public class UrlManager {
             case ELEMENT_TYPE_IMAGE:
                 urlBase=paramURL;
                 break;
-
         }
         URL url = null;
         try {
@@ -55,7 +54,6 @@ public class UrlManager {
             return null;
         }
         return url;
-
     }
 
 
