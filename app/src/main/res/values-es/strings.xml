@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">The Guardian</string>
+    <string name="search">Buscar</string>
+
+
+    <string name="searching">Buscando</string>
+</resources>
