@@ -27,6 +27,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.applaudostudio.weekfivechallangeone.R;
 import com.applaudostudio.weekfivechallangeone.activity.DetailActivity;
@@ -45,12 +46,13 @@ import java.util.List;
 public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCallbacks<String>, NewsListAdapter.ItemSelectedListener {
     public static final String ARG_PAGE = "ARG_PAGE";
     public static final String PAGE_COUNTER = "counterPages";
-    public static final int MINPAGE_COUNT=6;
+    public static final int MIN_PAGE_COUNT =6;
     private String mPage;
     private String mCategoryText;
     private RecyclerView mRecyclerViewNews;
     private List<ItemNews> mNewsList;
     private int mPagerCount = 6;
+    private FrameLayout mProgressLoad;
     NewsListAdapter mAdapterNews;
 
     public static FeedNewFragment newInstance(String category) {
@@ -73,6 +75,8 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_feednew, container, false);
         mRecyclerViewNews = v.findViewById(R.id.recyclerNews);
+        mProgressLoad=v.findViewById(R.id.progressBarLoading);
+        mProgressLoad.setVisibility(View.GONE);
         mCategoryText = mPage;
         return v;
     }
@@ -121,8 +125,10 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
     @NonNull
     @Override
     public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
+        mProgressLoad.setVisibility(View.VISIBLE);
+
         UrlManager urlGenerator = new UrlManager();
-        if (mPagerCount > MINPAGE_COUNT) {
+        if (mPagerCount > MIN_PAGE_COUNT) {
             return new LoaderNewsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_JSON, mCategoryText, mPagerCount, false));
         }
         return new LoaderNewsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_JSON, mCategoryText, 0, true));
@@ -131,9 +137,10 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String data) {
         JSONParserItem parser = new JSONParserItem();
-
         mNewsList.addAll(parser.getNewList(data));
         mAdapterNews.setData(mNewsList);
+        mProgressLoad.setVisibility(View.GONE);
+
 
     }
 

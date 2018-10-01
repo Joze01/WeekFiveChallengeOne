@@ -14,10 +14,11 @@
      limitations under the License.
 -->
 <!-- Layout for the Tuesday fragment -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:clickable="true"
     android:padding="0dp">
 
     <android.support.v7.widget.RecyclerView
@@ -26,4 +27,22 @@
         android:layout_height="match_parent"
         android:background="@color/colorRecycler"
         />
-</LinearLayout>
+
+<FrameLayout
+    android:id="@+id/progressBarLoading"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+   >
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#FFFF" />
+
+</FrameLayout>
+
+</RelativeLayout>
