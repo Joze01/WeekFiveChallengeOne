@@ -42,20 +42,21 @@ import java.util.List;
 /**
  * Fragment that displays "news list".
  */
-public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> , NewsListAdapter.ItemSelectedListener{
+public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCallbacks<String>, NewsListAdapter.ItemSelectedListener {
     public static final String ARG_PAGE = "ARG_PAGE";
+    public static final String PAGE_COUNTER = "counterPages";
+    public static final int MINPAGE_COUNT=6;
     private String mPage;
     private String mCategoryText;
     private RecyclerView mRecyclerViewNews;
     private List<ItemNews> mNewsList;
-
-
+    private int mPagerCount = 6;
+    NewsListAdapter mAdapterNews;
 
     public static FeedNewFragment newInstance(String category) {
         Bundle args = new Bundle();
         args.putString(ARG_PAGE, category);
         FeedNewFragment fragment = new FeedNewFragment();
-
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,49 +72,81 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_feednew, container, false);
-        mRecyclerViewNews= v.findViewById(R.id.recyclerNews);
-        mCategoryText =mPage;
+        mRecyclerViewNews = v.findViewById(R.id.recyclerNews);
+        mCategoryText = mPage;
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        mNewsList=new ArrayList<>();
+        if (savedInstanceState != null) {
+            mPagerCount = savedInstanceState.getInt(PAGE_COUNTER);
+        } else {
+            mPagerCount = 6;
+        }
         getLoaderManager().initLoader(0, null, this);
         getLoaderManager().getLoader(0);
         mRecyclerViewNews.setHasFixedSize(true);
         // use a linear layout manager
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerViewNews.setLayoutManager(mLayoutManager);
+        mAdapterNews = new NewsListAdapter(mNewsList, this);
+        mRecyclerViewNews.setAdapter(mAdapterNews);
+        mRecyclerViewNews.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    mPagerCount++;
+                    getLoaderManager().restartLoader(0, null, FeedNewFragment.this);
+
+                }
+
+            }
+        });
+
     }
+
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(PAGE_COUNTER, mPagerCount);
+        super.onSaveInstanceState(outState);
+    }
+
 
     @NonNull
     @Override
     public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
         UrlManager urlGenerator = new UrlManager();
-        return new LoaderNewsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_JSON,mCategoryText,0,true));
+        if (mPagerCount > MINPAGE_COUNT) {
+            return new LoaderNewsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_JSON, mCategoryText, mPagerCount, false));
+        }
+        return new LoaderNewsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_JSON, mCategoryText, 0, true));
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String data) {
         JSONParserItem parser = new JSONParserItem();
-        mNewsList=parser.getNewList(data);
 
-        NewsListAdapter mAdapterNews = new NewsListAdapter(mNewsList, this);
-        mRecyclerViewNews.setAdapter(mAdapterNews);
+        mNewsList.addAll(parser.getNewList(data));
+        mAdapterNews.setData(mNewsList);
+
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<String> loader) {
-        mNewsList=new ArrayList<>();
+        mNewsList = new ArrayList<>();
     }
 
 
     @Override
     public void onClickNewsDetail(ItemNews item) {
         Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra(DetailActivity.EXTRA_ITEM,item);
+        intent.putExtra(DetailActivity.EXTRA_ITEM, item);
         startActivity(intent);
     }
 }

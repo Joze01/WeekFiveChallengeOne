@@ -36,6 +36,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
         mCallback = callback;
     }
 
+
+    public void setData(List<ItemNews> mDataSet){
+        this.mDataSet = mDataSet;
+        this.notifyDataSetChanged();
+    }
     /***
      * Constructor for the view Holder of the recycler view
      * @param parent the parent viewGroup
