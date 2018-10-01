@@ -11,16 +11,27 @@ import com.applaudostudio.weekfivechallangeone.util.DataInterpreter;
 import java.io.InputStream;
 import java.net.URL;
 
-
+/***
+ * loader for the images of the detail
+ */
 public class LoaderBitMapsAsync extends AsyncTaskLoader<Bitmap> {
     private URL mUrlGenerated;
 
+    /***
+     * constructor
+     * @param context context
+     * @param generatedUrl URL object to be consult
+     */
     public LoaderBitMapsAsync(Context context, URL generatedUrl) {
         super(context);
         mUrlGenerated = generatedUrl;
         onForceLoad();
     }
 
+    /***
+     * Load on background function to execute async work
+     * @return a bit map
+     */
     @Nullable
     @Override
     public Bitmap loadInBackground() {

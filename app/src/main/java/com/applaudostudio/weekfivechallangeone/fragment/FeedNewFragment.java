@@ -24,11 +24,9 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.applaudostudio.weekfivechallangeone.R;
 import com.applaudostudio.weekfivechallangeone.activity.DetailActivity;
@@ -37,7 +35,6 @@ import com.applaudostudio.weekfivechallangeone.loader.LoaderNewsAsync;
 import com.applaudostudio.weekfivechallangeone.model.ItemNews;
 import com.applaudostudio.weekfivechallangeone.util.JSONParserItem;
 import com.applaudostudio.weekfivechallangeone.util.UrlManager;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +47,6 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
     private String mPage;
     private String mCategoryText;
     private RecyclerView mRecyclerViewNews;
-    private NewsListAdapter mAdapterNews;
     private List<ItemNews> mNewsList;
 
 
@@ -67,14 +63,14 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPage = getArguments().getString(ARG_PAGE);
+        if (getArguments() != null) {
+            mPage = getArguments().getString(ARG_PAGE);
+        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_feednew, container, false);
-        TextView txtParam = (TextView) v.findViewById(R.id.textView);
-        txtParam.setText("# Fragment" + mPage);
         mRecyclerViewNews= v.findViewById(R.id.recyclerNews);
         mCategoryText =mPage;
         return v;
@@ -85,22 +81,18 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         super.onActivityCreated(savedInstanceState);
 
         getLoaderManager().initLoader(0, null, this);
-        getLoaderManager().getLoader(0).startLoading();
-
+        getLoaderManager().getLoader(0);
         mRecyclerViewNews.setHasFixedSize(true);
         // use a linear layout manager
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerViewNews.setLayoutManager(mLayoutManager);
-        // specify an adapter (see also next example)
-
-        Log.v("ONCREATE_ACTIVITY","OK");
     }
 
     @NonNull
     @Override
     public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
-        UrlManager urlGenrator = new UrlManager();
-        return new LoaderNewsAsync(getActivity(),urlGenrator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_JSON,mCategoryText,0,true));
+        UrlManager urlGenerator = new UrlManager();
+        return new LoaderNewsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_JSON,mCategoryText,0,true));
     }
 
     @Override
@@ -108,7 +100,7 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         JSONParserItem parser = new JSONParserItem();
         mNewsList=parser.getNewList(data);
 
-        mAdapterNews = new NewsListAdapter(mNewsList,this,getLoaderManager());
+        NewsListAdapter mAdapterNews = new NewsListAdapter(mNewsList, this);
         mRecyclerViewNews.setAdapter(mAdapterNews);
     }
 
@@ -120,7 +112,6 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onClickNewsDetail(ItemNews item) {
-
         Intent intent = new Intent(getActivity(), DetailActivity.class);
         intent.putExtra(DetailActivity.EXTRA_ITEM,item);
         startActivity(intent);

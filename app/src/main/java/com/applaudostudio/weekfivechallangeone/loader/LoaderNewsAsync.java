@@ -13,13 +13,20 @@ import java.net.URL;
 
 public class LoaderNewsAsync extends AsyncTaskLoader<String> {
     private URL mUrlGenerated;
-
+    /***
+     * constructor
+     * @param context context
+     * @param generatedUrl URL object to be consult
+     */
     public LoaderNewsAsync(Context context, URL generatedUrl) {
         super(context);
         mUrlGenerated = generatedUrl;
         onForceLoad();
     }
-
+    /***
+     * Load on background function to execute async work
+     * @return a string
+     */
     @Nullable
     @Override
     public String loadInBackground() {

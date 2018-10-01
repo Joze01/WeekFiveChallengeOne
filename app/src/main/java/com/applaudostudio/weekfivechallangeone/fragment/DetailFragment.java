@@ -1,31 +1,34 @@
 package com.applaudostudio.weekfivechallangeone.fragment;
 
-import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.applaudostudio.weekfivechallangeone.R;
+import com.applaudostudio.weekfivechallangeone.loader.LoaderBitMapsAsync;
 import com.applaudostudio.weekfivechallangeone.model.ItemNews;
+import com.applaudostudio.weekfivechallangeone.util.UrlManager;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DetailFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link DetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class DetailFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Bitmap>, View.OnClickListener {
+    private static final String BUNDLE_KEY = "itemKey";
+    private TextView mTextBody;
+    private ImageView mImageTumb;
+    private TextView mTxtTitle;
+    private ImageView mButtonInternet;
+    private ItemNews mItem;
 
-    public DetailFragment() {
-        // Required empty public constructor
-    }
 
     /**
      * Use this factory method to create a new instance of
@@ -33,64 +36,119 @@ public class DetailFragment extends Fragment {
      *
      * @return A new instance of fragment DetailFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static DetailFragment newInstance(ItemNews item) {
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
+        args.putParcelable(BUNDLE_KEY, item);
         fragment.setArguments(args);
         return fragment;
     }
 
+    /***
+     * on create  to init the item wit the data
+     * @param savedInstanceState saved preferences
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            mItem = getArguments().getParcelable(BUNDLE_KEY);
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detail, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+    /***
+     * con create view to get the
+     * @param inflater a LayoutInflater
+     * @param container a view container
+     * @param savedInstanceState bundle to save a preferences
+     * @return returns a view
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_detail, container, false);
+        mTextBody = v.findViewById(R.id.textViewBody);
+        mImageTumb = v.findViewById(R.id.appCompatImageViewHeader);
+        mButtonInternet = v.findViewById(R.id.imageViewButton);
+        mTxtTitle=v.findViewById(R.id.textViewHeaderTitle);
+        mButtonInternet.setOnClickListener(this);
+        return v;
+    }
+
+    /***
+     * Create activity to set the data on each view element and the loader
+     * @param savedInstanceState saved preferences
+     */
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mTextBody.setText(mItem.getTextBody());
+        mTxtTitle.setText(mItem.getTitle());
+        getLoaderManager().initLoader(2, null, this);
+        getLoaderManager().getLoader(2);
+
+        if(mItem.getWebUrl().equals("")){
+            mButtonInternet.setVisibility(View.GONE);
+        }
+
+
+    }
+
+    //Call backs of the loader implement
+
+    /***
+     * On create loader, to to set the url of a image to be download
+     * @param id the id of the loader
+     * @param args bundle with arguments
+     * @return returns a bitmap data
+     */
+    @NonNull
+    @Override
+    public Loader<Bitmap> onCreateLoader(int id, @Nullable Bundle args) {
+        String url;
+        url = mItem.getThumbnailUrl();
+        UrlManager urlGenerator = new UrlManager();
+        LoaderBitMapsAsync async = null;
+        if (url != null) {
+            async= new LoaderBitMapsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_IMAGE, url, 0, false));
+        }
+        return async;
+
+    }
+
+    /***
+     * if load finish ends here
+     * @param loader loader retuerned by oncreate
+     * @param data data with the downloaded data.
+     */
+    @Override
+    public void onLoadFinished(@NonNull Loader<Bitmap> loader, Bitmap data) {
+        if (data != null) {
+            mImageTumb.setImageBitmap(data);
+        }
+    }
+
+    /***
+     * if loads gets reset
+     * @param loader loader for the status
+     */
+    @Override
+    public void onLoaderReset(@NonNull Loader<Bitmap> loader) {
+
+    }
+
+    /***
+     * on click for the web button to open the browser
+     * @param v returns a view
+     */
+    @Override
+    public void onClick(View v) {
+        if(v.getId()==R.id.imageViewButton){
+            if(!mItem.getWebUrl().equals("")) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mItem.getWebUrl()));
+                startActivity(intent);
+            }
+
+        }
     }
 }

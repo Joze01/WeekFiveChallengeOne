@@ -12,6 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JSONParserItem {
+
+    /***
+     * Function to get a list of News model from a JSON result
+     * @param jsonString STRING JSON
+     * @return returns a list<NewItem>
+     */
     public List<ItemNews> getNewList(String jsonString) {
         List<ItemNews> resultList = new ArrayList<>();
         try {
@@ -25,13 +31,13 @@ public class JSONParserItem {
                     JSONObject firstFeature = featureArray.getJSONObject(i);
                     JSONObject properties = firstFeature.getJSONObject("fields");
                     if (properties.has("headline"))
-                        itemNews.setmTitle(properties.getString("headline"));
+                        itemNews.setTitle(properties.getString("headline"));
                     if (properties.has("bodyText"))
-                        itemNews.setmTextBody(properties.getString("bodyText"));
+                        itemNews.setTextBody(properties.getString("bodyText"));
                     if (properties.has("thumbnail"))
-                        itemNews.setmThumbnailUrl(properties.getString("thumbnail"));
-                    if (properties.has("webUrl"))
-                        itemNews.setmWebUrl(firstFeature.getString("webUrl"));
+                        itemNews.setThumbnailUrl(properties.getString("thumbnail"));
+                    if (firstFeature.has("webUrl"))
+                        itemNews.setWebUrl(firstFeature.getString("webUrl"));
                     resultList.add(itemNews);
                 }
             }

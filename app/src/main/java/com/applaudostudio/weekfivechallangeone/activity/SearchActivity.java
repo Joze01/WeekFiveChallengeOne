@@ -1,13 +1,11 @@
 package com.applaudostudio.weekfivechallangeone.activity;
 
-import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.Toast;
@@ -15,24 +13,31 @@ import android.widget.Toast;
 import com.applaudostudio.weekfivechallangeone.R;
 import com.applaudostudio.weekfivechallangeone.fragment.FeedNewFragment;
 
+/***
+ * Activity for the search activity
+ */
 public class SearchActivity extends AppCompatActivity {
-    private Boolean mLoadSearchView;
     SearchView mSearchView;
 
+    /***
+     * Function on create to set inflate the view
+     * @param savedInstanceState bundle saved preference
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        Intent intent = getIntent();
-        if (intent != null) {
-            mLoadSearchView = intent.getBooleanExtra(MainActivity.EXTRA_SEARCH_STATUS, false);
-        }
+
     }
 
 
+    /***
+     * Function to create menu options set the behavior of the search view
+     * @param menu menu element
+     * @return returns a boolean
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mLoadSearchView) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.search_item_detail, menu);
 
@@ -40,10 +45,12 @@ public class SearchActivity extends AppCompatActivity {
             mSearchView.setIconified(false);
             mSearchView.requestFocusFromTouch();
             mSearchView.setQueryHint(getText(R.string.search));
+            //Anonymous implement of the OnQueryTextLister
             mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                //for submit the query  for search and start load the result fragment
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    Toast.makeText(SearchActivity.this, query.toLowerCase(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SearchActivity.this, R.string.searching, Toast.LENGTH_SHORT).show();
                     FragmentManager manager = getSupportFragmentManager();
                     Fragment fragment = FeedNewFragment.newInstance(query);
                     FragmentTransaction transaction = manager.beginTransaction();
@@ -60,7 +67,7 @@ public class SearchActivity extends AppCompatActivity {
                     return false;
                 }
             });
-        }
+
         return true;
     }
 

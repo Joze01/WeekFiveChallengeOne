@@ -1,9 +1,11 @@
 package com.applaudostudio.weekfivechallangeone.model;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/***
+ * News item (model)
+ */
 public class ItemNews implements Parcelable {
     private String mTitle;
     private String mThumbnailUrl;
@@ -11,35 +13,35 @@ public class ItemNews implements Parcelable {
     private String mWebUrl;
 
 
-    public String getmTitle() {
+    public String getTitle() {
         return mTitle;
     }
 
-    public void setmTitle(String mTitle) {
+    public void setTitle(String mTitle) {
         this.mTitle = mTitle;
     }
 
-    public String getmThumbnailUrl() {
+    public String getThumbnailUrl() {
         return mThumbnailUrl;
     }
 
-    public void setmThumbnailUrl(String mThumbnailUrl) {
+    public void setThumbnailUrl(String mThumbnailUrl) {
         this.mThumbnailUrl = mThumbnailUrl;
     }
 
-    public String getmTextBody() {
+    public String getTextBody() {
         return mTextBody;
     }
 
-    public void setmTextBody(String mTextBody) {
+    public void setTextBody(String mTextBody) {
         this.mTextBody = mTextBody;
     }
 
-    public String getmWebUrl() {
+    public String getWebUrl() {
         return mWebUrl;
     }
 
-    public void setmWebUrl(String mWebUrl) {
+    public void setWebUrl(String mWebUrl) {
         this.mWebUrl = mWebUrl;
     }
 

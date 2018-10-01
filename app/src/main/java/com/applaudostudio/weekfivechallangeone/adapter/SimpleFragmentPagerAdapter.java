@@ -15,10 +15,8 @@
  */
 package com.applaudostudio.weekfivechallangeone.adapter;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.applaudostudio.weekfivechallangeone.fragment.FeedNewFragment;
@@ -27,25 +25,34 @@ import com.applaudostudio.weekfivechallangeone.fragment.FeedNewFragment;
  * Provides the appropriate {@link Fragment} for a view pager.
  */
 public class SimpleFragmentPagerAdapter extends FragmentStatePagerAdapter {
-
-    final int PAGE_COUNT = 6;
+    //for the tabs
     private String tabTitles[] = new String[]{"NATIONAL", "INTERNATIONAL", "ENTERTAINMENT", "TECHNOLOGY", "SPORT", "LIFE"};
-    private Context context;
-    private String mCategory;
 
-    public SimpleFragmentPagerAdapter(FragmentManager fm, Context context) {
+    /***
+     * Constructor
+      * @param fm Fragment manager
+     */
+    public SimpleFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
-        this.context = context;
     }
 
+    /***
+     * get item on the position selected
+     * @param position position of the tab
+     * @return returns a fragment
+     */
     @Override
     public Fragment getItem(int position) {
         return FeedNewFragment.newInstance(tabTitles[position]);
     }
 
+    /***
+     * count of items
+      * @return returns an int
+     */
     @Override
     public int getCount() {
-        return PAGE_COUNT;
+        return tabTitles.length;
     }
 
     @Override

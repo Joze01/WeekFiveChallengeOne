@@ -19,24 +19,25 @@ import com.applaudostudio.weekfivechallangeone.util.UrlManager;
 
 import java.util.List;
 
+/***
+ * Adapter for the recycler view
+ */
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsViewHolder> {
     private List<ItemNews> mDataSet;
     private final ItemSelectedListener mCallback;
-    android.support.v4.app.LoaderManager mManager;
 
     /***
      * Constructor to set data set and a callback for the SelectedItem listener
      * @param mDataSet Data with the news items
      * @param callback callback for the item selected.
      */
-    public NewsListAdapter(List<ItemNews> mDataSet, ItemSelectedListener callback, android.support.v4.app.LoaderManager manager) {
+    public NewsListAdapter(List<ItemNews> mDataSet, ItemSelectedListener callback) {
         this.mDataSet = mDataSet;
         mCallback = callback;
-        mManager = manager;
     }
 
     /***
-     * Constructor for the view Holder of the recyclerview
+     * Constructor for the view Holder of the recycler view
      * @param parent the parent viewGroup
      * @param viewType Type of view to be render
      * @return returns a RadioViewHolder
@@ -60,7 +61,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
 
     /***
      * function to get the data set size.
-     * @return number of item of the dataset
+     * @return number of item of the data set
      */
     @Override
     public int getItemCount() {
@@ -102,14 +103,15 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
 
         /***
          * Function to bind the data to the view element
-         * @param item
+         * @param item item news
          */
         private void bindData(ItemNews item) {
-            mTxtHeadline.setText(item.getmTitle());
+            mTxtHeadline.setText(item.getTitle());
             mImagenDownload.setImageResource(R.drawable.ic_launcher_background);
-            new AsyncLoadImage().execute(item.getmThumbnailUrl());
+            new AsyncLoadImage().execute(item.getThumbnailUrl());
         }
 
+        //Async task to load each image
         class AsyncLoadImage extends AsyncTask<String, Void, Bitmap> {
             @Override
             protected Bitmap doInBackground(String... strings) {
