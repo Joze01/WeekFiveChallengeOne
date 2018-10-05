@@ -25,15 +25,17 @@ import java.util.List;
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsViewHolder> {
     private List<ItemNews> mDataSet;
     private final ItemSelectedListener mCallback;
+    private boolean mInternetStatus;
 
     /***
      * Constructor to set data set and a callback for the SelectedItem listener
      * @param mDataSet Data with the news items
      * @param callback callback for the item selected.
      */
-    public NewsListAdapter(List<ItemNews> mDataSet, ItemSelectedListener callback) {
+    public NewsListAdapter(List<ItemNews> mDataSet, ItemSelectedListener callback,boolean intenertStatus) {
         this.mDataSet = mDataSet;
         mCallback = callback;
+        mInternetStatus =intenertStatus;
     }
 
 
@@ -113,6 +115,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
         private void bindData(ItemNews item) {
             mTxtHeadline.setText(item.getTitle());
             mImagenDownload.setImageResource(R.drawable.ic_launcher_background);
+            if(mInternetStatus)
             new AsyncLoadImage().execute(item.getThumbnailUrl());
         }
 
@@ -123,14 +126,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
                 UrlManager urlManager = new UrlManager();
                 GuardianApiClient client = new GuardianApiClient();
                 DataInterpreter interpreter = new DataInterpreter();
-
                 return interpreter.streamToBitMap(client.makeHttpRequest(urlManager.GenerateURLByElement(UrlManager.ELEMENT_TYPE_IMAGE, strings[0], 0, false)));
             }
 
             @Override
             protected void onPostExecute(Bitmap bitmap) {
                 super.onPostExecute(bitmap);
-                //mImagenMap=bitmap;
                 mImagenDownload.setImageBitmap(bitmap);
             }
         }

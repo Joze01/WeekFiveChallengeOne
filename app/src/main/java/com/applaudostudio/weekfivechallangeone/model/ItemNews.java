@@ -7,11 +7,30 @@ import android.os.Parcelable;
  * News item (model)
  */
 public class ItemNews implements Parcelable {
+
+
+    private String mNewId;
     private String mTitle;
     private String mThumbnailUrl;
     private String mTextBody;
     private String mWebUrl;
+    private String mCategory;
 
+    public String getmCategory() {
+        return mCategory;
+    }
+
+    public void setmCategory(String mCategory) {
+        this.mCategory = mCategory;
+    }
+
+    public String getNewId() {
+        return mNewId;
+    }
+
+    public void setNewId(String mNewId) {
+        this.mNewId = mNewId;
+    }
 
     public String getTitle() {
         return mTitle;
@@ -51,6 +70,7 @@ public class ItemNews implements Parcelable {
         this.mTitle="";
         this.mThumbnailUrl="";
         this.mWebUrl="";
+        this.mNewId="";
     }
 
 
@@ -61,6 +81,7 @@ public class ItemNews implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mNewId);
         dest.writeString(this.mTitle);
         dest.writeString(this.mThumbnailUrl);
         dest.writeString(this.mTextBody);
@@ -68,6 +89,7 @@ public class ItemNews implements Parcelable {
     }
 
     protected ItemNews(Parcel in) {
+        this.mNewId = in.readString();
         this.mTitle = in.readString();
         this.mThumbnailUrl = in.readString();
         this.mTextBody = in.readString();

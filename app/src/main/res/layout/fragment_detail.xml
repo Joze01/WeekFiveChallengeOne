@@ -8,7 +8,9 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_height="match_parent"
-        android:layout_width="match_parent" >
+        android:layout_width="match_parent"
+        android:id="@+id/detailContainer">
+
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/appCompatImageViewHeader"
@@ -63,6 +65,21 @@
             app:layout_constraintTop_toBottomOf="@+id/appCompatImageViewHeader" />
 
 
-
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/detailContainer"
+            android:layout_alignTop="@+id/detailContainer"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_star_fab"
+            app:fabSize="auto"
+            app:layout_constraintBottom_toBottomOf="@+id/appCompatImageViewHeader"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatImageViewHeader" />>
     </android.support.constraint.ConstraintLayout>
+
+
 </ScrollView>

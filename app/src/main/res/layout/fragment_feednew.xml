@@ -28,6 +28,8 @@
         android:background="@color/colorRecycler"
         />
 
+
+
 <FrameLayout
     android:id="@+id/progressBarLoading"
     android:layout_width="match_parent"
@@ -44,5 +46,6 @@
         android:background="#FFFF" />
 
 </FrameLayout>
+
 
 </RelativeLayout>

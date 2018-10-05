@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.applaudostudio.weekfivechallangeone.loader.apiclient.GuardianApiClient;
+import com.applaudostudio.weekfivechallangeone.receiver.InternetReceiver;
 import com.applaudostudio.weekfivechallangeone.util.DataInterpreter;
 
 import java.io.InputStream;
@@ -14,7 +15,7 @@ import java.net.URL;
 /***
  * loader for the images of the detail
  */
-public class LoaderBitMapsAsync extends AsyncTaskLoader<Bitmap> {
+public class LoaderBitMapsAsync extends AsyncTaskLoader<Bitmap>{
     private URL mUrlGenerated;
 
     /***
@@ -26,6 +27,9 @@ public class LoaderBitMapsAsync extends AsyncTaskLoader<Bitmap> {
         super(context);
         mUrlGenerated = generatedUrl;
         onForceLoad();
+
+
+
     }
 
     /***
@@ -41,4 +45,5 @@ public class LoaderBitMapsAsync extends AsyncTaskLoader<Bitmap> {
         InputStream downloadedData = mApiClient.makeHttpRequest(mUrlGenerated);
         return inputStreamInterpreter.streamToBitMap(downloadedData);
     }
+
 }

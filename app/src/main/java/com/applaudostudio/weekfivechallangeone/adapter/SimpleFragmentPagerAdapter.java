@@ -15,18 +15,22 @@
  */
 package com.applaudostudio.weekfivechallangeone.adapter;
 
+import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.applaudostudio.weekfivechallangeone.fragment.FeedNewFragment;
+import com.applaudostudio.weekfivechallangeone.receiver.InternetReceiver;
 
 /**
  * Provides the appropriate {@link Fragment} for a view pager.
  */
-public class SimpleFragmentPagerAdapter extends FragmentStatePagerAdapter {
+public class SimpleFragmentPagerAdapter extends FragmentStatePagerAdapter implements InternetReceiver.InternetConnectionListener {
     //for the tabs
     private String tabTitles[] = new String[]{"NATIONAL", "INTERNATIONAL", "ENTERTAINMENT", "TECHNOLOGY", "SPORT", "LIFE"};
+    private boolean mNetworkStatus;
+    private InternetReceiver mInternetReceiver;
 
     /***
      * Constructor
@@ -59,5 +63,10 @@ public class SimpleFragmentPagerAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         // Generate title based on item position
         return tabTitles[position];
+    }
+
+    @Override
+    public void onInternetAvailable(boolean status) {
+        mNetworkStatus=status;
     }
 }
