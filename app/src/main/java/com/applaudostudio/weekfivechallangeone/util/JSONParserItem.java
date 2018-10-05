@@ -40,7 +40,7 @@ public class JSONParserItem {
                         itemNews.setWebUrl(firstFeature.getString("webUrl"));
                     if (firstFeature.has("id"))
                         itemNews.setNewId(firstFeature.getString("id"));
-                        itemNews.setmCategory(category);
+                        itemNews.setCategory(category);
                     resultList.add(itemNews);
                 }
             }

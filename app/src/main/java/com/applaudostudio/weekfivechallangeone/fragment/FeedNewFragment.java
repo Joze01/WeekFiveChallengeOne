@@ -27,7 +27,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -171,7 +170,7 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         contentValues.put(TheGuardianContact.News.COLUMN_NEW_BODY_TEXT, item.getTextBody());
         contentValues.put(TheGuardianContact.News.COLUMN_NEW_WEB_URL, item.getWebUrl());
         contentValues.put(TheGuardianContact.News.COLUMN_NEW_THUMBNAIL, item.getWebUrl());
-        contentValues.put(TheGuardianContact.News.COLUMN_NEW_CATEGORY, item.getmCategory());
+        contentValues.put(TheGuardianContact.News.COLUMN_NEW_CATEGORY, item.getCategory());
         return contentValues;
     }
 

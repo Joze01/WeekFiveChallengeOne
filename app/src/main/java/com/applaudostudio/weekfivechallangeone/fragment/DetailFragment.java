@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -28,6 +29,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mTxtTitle;
     private ImageView mButtonInternet;
     private ItemNews mItem;
+    private FloatingActionButton mFavButton;
 
 
     /**
@@ -71,7 +73,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mImageTumb = v.findViewById(R.id.appCompatImageViewHeader);
         mButtonInternet = v.findViewById(R.id.imageViewButton);
         mTxtTitle=v.findViewById(R.id.textViewHeaderTitle);
+        mFavButton=v.findViewById(R.id.floatingActionButton);
         mButtonInternet.setOnClickListener(this);
+        mFavButton.setOnClickListener(this);
         return v;
     }
 

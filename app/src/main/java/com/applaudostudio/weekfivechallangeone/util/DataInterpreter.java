@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.applaudostudio.weekfivechallangeone.model.ItemNews;
-import com.applaudostudio.weekfivechallangeone.persistence.contract.TheGuardianContact;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -61,7 +60,7 @@ public class DataInterpreter {
                 newItem.setTitle(data.getString(1));
                 newItem.setTextBody(data.getString(2));
                 newItem.setThumbnailUrl(data.getString(4));
-                newItem.setmCategory(data.getString(5));
+                newItem.setCategory(data.getString(5));
                 newItem.setWebUrl(data.getString(3));
                 result.add(newItem);
             }while (data.moveToNext());

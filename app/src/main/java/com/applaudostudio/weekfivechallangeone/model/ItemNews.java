@@ -16,11 +16,11 @@ public class ItemNews implements Parcelable {
     private String mWebUrl;
     private String mCategory;
 
-    public String getmCategory() {
+    public String getCategory() {
         return mCategory;
     }
 
-    public void setmCategory(String mCategory) {
+    public void setCategory(String mCategory) {
         this.mCategory = mCategory;
     }
 
@@ -65,15 +65,6 @@ public class ItemNews implements Parcelable {
     }
 
 
-    public ItemNews() {
-        this.mTextBody="";
-        this.mTitle="";
-        this.mThumbnailUrl="";
-        this.mWebUrl="";
-        this.mNewId="";
-    }
-
-
     @Override
     public int describeContents() {
         return 0;
@@ -86,6 +77,10 @@ public class ItemNews implements Parcelable {
         dest.writeString(this.mThumbnailUrl);
         dest.writeString(this.mTextBody);
         dest.writeString(this.mWebUrl);
+        dest.writeString(this.mCategory);
+    }
+
+    public ItemNews() {
     }
 
     protected ItemNews(Parcel in) {
@@ -94,6 +89,7 @@ public class ItemNews implements Parcelable {
         this.mThumbnailUrl = in.readString();
         this.mTextBody = in.readString();
         this.mWebUrl = in.readString();
+        this.mCategory = in.readString();
     }
 
     public static final Creator<ItemNews> CREATOR = new Creator<ItemNews>() {

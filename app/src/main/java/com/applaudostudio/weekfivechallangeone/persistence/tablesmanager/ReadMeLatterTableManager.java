@@ -3,6 +3,7 @@ package com.applaudostudio.weekfivechallangeone.persistence.tablesmanager;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 import com.applaudostudio.weekfivechallangeone.persistence.contract.TheGuardianContact;
 import com.applaudostudio.weekfivechallangeone.persistence.helper.TheGuardianDbHelper;
@@ -25,29 +26,17 @@ public class ReadMeLatterTableManager {
 
 
     public boolean addNew(ContentValues values) {
-       /* ContentValues contentValues = new ContentValues();
-        contentValues.put(TheGuardianContact.ReadMeLatter.COLUMN_NEW_ID, item.getNewId());
-        contentValues.put(TheGuardianContact.ReadMeLatter.COLUMN_NEW_HEAD_LINE, item.getTitle());
-        contentValues.put(TheGuardianContact.ReadMeLatter.COLUMN_NEW_BODY_TEXT, item.getTextBody());
-        contentValues.put(TheGuardianContact.ReadMeLatter.COLUMN_NEW_WEB_URL, item.getWebUrl());
-        contentValues.put(TheGuardianContact.ReadMeLatter.COLUMN_NEW_THUMBNAIL, item.getWebUrl());
-        */
         mDb = mHelperDb.getWritableDatabase();
-        return mDb.insert(TheGuardianContact.ReadMeLatter.TABLE_NAME, null, values) != -1;
+        return mDb.insertWithOnConflict(TheGuardianContact.ReadMeLatter.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1;
     }
 
-    boolean deleteNew(String id) {
+    public boolean deleteNews(Uri uri, String where, String[] selectionArgs) {
         mDb = mHelperDb.getWritableDatabase();
-        return mDb.delete(TheGuardianContact.ReadMeLatter.TABLE_NAME, TheGuardianContact.News.COLUMN_NEW_ID + "=?", new String[]{id}) == 1;
+        return mDb.delete(TheGuardianContact.ReadMeLatter.TABLE_NAME, where, selectionArgs) != -1;
     }
 
-    public Cursor getAllNews() {
+    public Cursor getAllNews(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         mDb = mHelperDb.getReadableDatabase();
-        return mDb.rawQuery("SELECT * FROM " + TheGuardianContact.ReadMeLatter.TABLE_NAME, null);
-    }
-
-    public Cursor getANews(String id) {
-        mDb = mHelperDb.getReadableDatabase();
-        return mDb.rawQuery("SELECT * FROM " + TheGuardianContact.ReadMeLatter.TABLE_NAME + "WHERE " + TheGuardianContact.ReadMeLatter.COLUMN_NEW_ID + "=" + id, null);
+        return mDb.query(TheGuardianContact.ReadMeLatter.TABLE_NAME, projection, selection, selectionArgs, sortOrder,null,null);
     }
 }
