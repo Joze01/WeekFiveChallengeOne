@@ -72,6 +72,11 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
     private FloatingActionButton mFloatButton;
     private static boolean mOfflineSearch;
 
+    /***
+     * instance to load if internet is not available
+     * @param category string for the search on api
+     * @return return a fragment instance
+     */
     public static FeedNewFragment newInstance(String category) {
         Bundle args = new Bundle();
         args.putString(ARG_PAGE, category);
@@ -80,7 +85,11 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         return fragment;
     }
 
-
+    /***
+     * instance to load if internet is not available
+     * @param category string for the search on api
+     * @return return a fragment instance
+     */
     public static FeedNewFragment newInstanceSearchOnline(String category) {
         Bundle args = new Bundle();
         args.putString(ARG_PAGE, category);
@@ -90,16 +99,28 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         return fragment;
     }
 
+    /***
+     * create of the fragment
+     * @param savedInstanceState saved state
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mPage = getArguments().getString(ARG_PAGE);
         }
+        if(getActivity()!=null)
         mContentResolver = getActivity().getContentResolver();
 
     }
 
+    /***
+     * Inflate view of the fragment
+     * @param inflater inflater
+     * @param container container view
+     * @param savedInstanceState saved state bundle
+     * @return return a view
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_feednew, container, false);
@@ -111,6 +132,10 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         return v;
     }
 
+    /***
+     * create the fragment activity
+     * @param savedInstanceState saved bundle
+     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -130,11 +155,11 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         mInternetStatus = connectionManager.isNetworkAvailable();
         mAdapterNews = new NewsListAdapter(mNewsList, this, mInternetStatus);
         mRecyclerViewNews.setAdapter(mAdapterNews);
-
+        //use the internet loader local storage data
         if (!mInternetStatus) {
             getLoaderManager().initLoader(1, null, this);
             getLoaderManager().getLoader(1);
-        } else {
+        } else { //load the api info
             getLoaderManager().initLoader(0, null, this);
             getLoaderManager().getLoader(0);
             mRecyclerViewNews.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -150,6 +175,9 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         }
     }
 
+    /***
+     * check network status to notify the user if network enable
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -157,15 +185,26 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         IntentFilter intentFilter = new IntentFilter();
         // Add network connectivity change action.
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        if(getActivity()!=null)
         getActivity().registerReceiver(mInternetReceiver, intentFilter);
     }
 
+    /**
+     * save the state of a views
+     *
+     * @param outState bundle to save
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(PAGE_COUNTER, mPagerCount);
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * simple click listener implementation
+     *
+     * @param item item as param
+     */
     @Override
     public void onClickNewsDetail(ItemNews item) {
         Intent intent = new Intent(getActivity(), DetailActivity.class);
@@ -173,12 +212,21 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         startActivity(intent);
     }
 
+    /***
+     * LongclickImplementation
+     * @param item item as apram
+     * @return return false to trigger the simple click
+     */
     @Override
     public boolean onLongClickNewDelete(ItemNews item) {
-        return true;
+        return false;
     }
 
-
+    /***
+     * CotentValues generator for the insert on SQLite
+     * @param item item instace of NewItem
+     * @return returns a contentValues object
+     */
     private ContentValues valuesContainer(ItemNews item) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TheGuardianContact.News.COLUMN_NEW_ID, item.getNewId());
@@ -190,6 +238,12 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         return contentValues;
     }
 
+    /***
+     * create for loader using the id 0 for for api and 1 for SQLite
+     * @param id id of loader
+     * @param args argument bundle of loader
+     * @return returns a loader
+     */
     @NonNull
     @Override
     public Loader onCreateLoader(int id, @Nullable Bundle args) {
@@ -200,17 +254,25 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
                 return new LoaderNewsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_JSON, mCategoryText, mPagerCount, false));
             }
         } else {
-            if (!mOfflineSearch) {
-                return new CursorLoader(getActivity(), TheGuardianContact.News.CONTENT_URI, null, TheGuardianContact.News.COLUMN_NEW_CATEGORY + "=?", new String[]{mCategoryText}, null);
-            } else {
-                return new CursorLoader(getActivity(), TheGuardianContact.News.CONTENT_URI, null, TheGuardianContact.News.COLUMN_NEW_HEAD_LINE + " LIKE ? OR "+TheGuardianContact.News.COLUMN_NEW_BODY_TEXT+" LIKE ?", new String[]{"%" + mCategoryText + "%", "%" + mCategoryText + "%"}, null);
+            if (getActivity() != null) {
+                if (!mOfflineSearch) {
+                    return new CursorLoader(getActivity(), TheGuardianContact.News.CONTENT_URI, null, TheGuardianContact.News.COLUMN_NEW_CATEGORY + "=?", new String[]{mCategoryText}, null);
+                } else {
+                    return new CursorLoader(getActivity(), TheGuardianContact.News.CONTENT_URI, null, TheGuardianContact.News.COLUMN_NEW_HEAD_LINE + " LIKE ? OR " + TheGuardianContact.News.COLUMN_NEW_BODY_TEXT + " LIKE ?", new String[]{"%" + mCategoryText + "%", "%" + mCategoryText + "%"}, null);
+                }
             }
         }
         return new LoaderNewsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_JSON, mCategoryText, 0, true));
     }
 
+    /***
+     * load finish  for all loader.
+     * @param loader load as objetct loader
+     * @param data data result
+     */
     @Override
     public void onLoadFinished(@NonNull Loader loader, Object data) {
+        // for api data
         if (loader.getId() == 0) {
             JSONParserItem parser = new JSONParserItem();
             mNewsList.addAll(parser.getNewList((String) data, mCategoryText));
@@ -218,6 +280,7 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
             for (ItemNews item : mNewsList) {
                 mContentResolver.insert(TheGuardianContact.News.CONTENT_URI, valuesContainer(item));
             }
+            //for SQLite data
         } else {
             mNewsList = new ArrayList<>();
             DataInterpreter interpreter = new DataInterpreter();
@@ -227,17 +290,29 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         mProgressLoad.setVisibility(View.GONE);
     }
 
+    /***
+     * reset the list of data
+     * @param loader loader as param
+     */
     @Override
     public void onLoaderReset(@NonNull Loader loader) {
         mNewsList = new ArrayList<>();
     }
 
 
+    /***
+     * listener for the internet status
+     * @param status internet status
+     */
     @Override
     public void onInternetAvailable(boolean status) {
         mInternetStatus = status;
     }
 
+    /***
+     * on click for favorite button
+     * @param v view as param
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

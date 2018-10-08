@@ -56,6 +56,7 @@ public class SearchActivity extends AppCompatActivity {
                 FragmentManager manager = getSupportFragmentManager();
                 ConnectionManager connectionManager = new ConnectionManager(getApplication());
                 Fragment fragment;
+                //If to set or not the state of the network for the searchview Fragment list
                 if(connectionManager.isNetworkAvailable()) {
                     fragment = FeedNewFragment.newInstance(query);
                 }else{

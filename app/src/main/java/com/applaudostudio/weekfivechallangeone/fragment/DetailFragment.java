@@ -5,10 +5,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,7 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.applaudostudio.weekfivechallangeone.R;
 import com.applaudostudio.weekfivechallangeone.loader.LoaderBitMapsAsync;
@@ -105,57 +102,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             mButtonInternet.setVisibility(View.GONE);
         }
 
-
-        mContentResolver = getActivity().getContentResolver();
-        buttonStatusChanger(mReadmeLatterStatus);
-    }
-
-    //Call backs of the loader implement
-
-    /***
-     * On create loader, to to set the url of a image to be download
-     * @param id the id of the loader
-     * @param args bundle with arguments
-     * @return returns a bitmap data
-     */
-    /*
-    @NonNull
-    @Override
-    public Loader<Bitmap> onCreateLoader(int id, @Nullable Bundle args) {
-        String url;
-        url = mItem.getThumbnailUrl();
-        UrlManager urlGenerator = new UrlManager();
-        LoaderBitMapsAsync async = null;
-        if (url != null) {
-            async = new LoaderBitMapsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_IMAGE, url, 0, false));
+        if (getActivity() != null) {
+            mContentResolver = getActivity().getContentResolver();
         }
-        return async;
+        //update the fav button
+        buttonStatusChanger();
+    }
 
-    }
-*/
-    /***
-     * if load finish ends here
-     * @param loader loader retuerned by oncreate
-     * @param data data with the downloaded data.
-     */
-    /*
-    @Override
-    public void onLoadFinished(@NonNull Loader<Bitmap> loader, Bitmap data) {
-        if (data != null) {
-            mImageTumb.setImageBitmap(data);
-        }
-    }
-*/
-    /***
-     * if loads gets reset
-     * @param loader loader for the status
-     */
-    /*
-    @Override
-    public void onLoaderReset(@NonNull Loader<Bitmap> loader) {
-
-    }
-*/
 
     /***
      * on click for the web button to open the browser
@@ -170,20 +123,27 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                     startActivity(intent);
                 }
                 break;
+            //fav button
             case R.id.floatingActionButton:
                 if (mReadmeLatterStatus) {
                     mContentResolver.delete(TheGuardianContact.ReadMeLatter.CONTENT_URI, TheGuardianContact.ReadMeLatter.COLUMN_NEW_ID + "=?", new String[]{mItem.getNewId()});
                     mReadmeLatterStatus = false;
-                    buttonStatusChanger(mReadmeLatterStatus);
+                    buttonStatusChanger();
                 } else {
                     mContentResolver.insert(TheGuardianContact.ReadMeLatter.CONTENT_URI, this.valuesGenerator(mItem));
                     mReadmeLatterStatus = true;
-                    buttonStatusChanger(mReadmeLatterStatus);
+                    buttonStatusChanger();
                 }
                 break;
         }
     }
 
+    /**
+     * generate a contentValues object for inserts
+     *
+     * @param item item as param
+     * @return return a contentValues
+     */
     public ContentValues valuesGenerator(ItemNews item) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TheGuardianContact.ReadMeLatter.COLUMN_NEW_ID, item.getNewId());
@@ -195,21 +155,17 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
 
-    public void buttonStatusChanger(boolean status) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    public void buttonStatusChanger() {
+        if (getContext() != null) {
             if (mReadmeLatterStatus) {
                 mFavButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_rate_pink, getContext().getTheme()));
             } else {
                 mFavButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_fab, getContext().getTheme()));
             }
-        } else {
-            if (mReadmeLatterStatus) {
-                mFavButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_rate_pink));
-            } else {
-                mFavButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_fab));
-            }
         }
     }
+
+
 
     @NonNull
     @Override
@@ -218,11 +174,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         url = mItem.getThumbnailUrl();
         UrlManager urlGenerator = new UrlManager();
         LoaderBitMapsAsync async = null;
-        if (url != null) {
-            if (id == 2) {
-                async = new LoaderBitMapsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_IMAGE, url, 0, false));
-            } else {
-                return new CursorLoader(getActivity(), TheGuardianContact.ReadMeLatter.CONTENT_URI, null, TheGuardianContact.ReadMeLatter.COLUMN_NEW_ID + "=?", new String[]{mItem.getNewId()}, null);
+        if (getActivity() != null) {
+            if (url != null) {
+                if (id == 2) {
+                    return new LoaderBitMapsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_IMAGE, url, 0, false));
+                } else {
+                    return new CursorLoader(getActivity(), TheGuardianContact.ReadMeLatter.CONTENT_URI, null, TheGuardianContact.ReadMeLatter.COLUMN_NEW_ID + "=?", new String[]{mItem.getNewId()}, null);
+                }
             }
         }
         return async;
@@ -235,12 +193,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 mImageTumb.setImageBitmap((Bitmap) data);
             } else {
                 Cursor dataList = (Cursor) data;
-                if (dataList.moveToFirst()) {
-                    mReadmeLatterStatus = true;
-                } else {
-                    mReadmeLatterStatus = false;
-                }
-                buttonStatusChanger(mReadmeLatterStatus);
+                mReadmeLatterStatus = dataList.moveToFirst();
+                buttonStatusChanger();
             }
         }
     }

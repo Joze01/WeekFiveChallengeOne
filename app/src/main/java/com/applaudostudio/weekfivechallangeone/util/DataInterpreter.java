@@ -50,6 +50,11 @@ public class DataInterpreter {
     }
 
 
+    /***
+     * Function to get a list of NewsItem from a cursor
+     * @param data cursor with the data
+     * @return returns a List of NewsItem
+     */
     public List<ItemNews> cursorToList(Cursor data) {
         List<ItemNews> result = new ArrayList<>();
         if (data.moveToFirst()) {

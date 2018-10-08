@@ -5,17 +5,19 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.applaudostudio.weekfivechallangeone.persistence.contract.TheGuardianContact;
 import com.applaudostudio.weekfivechallangeone.persistence.helper.TheGuardianDbHelper;
 import com.applaudostudio.weekfivechallangeone.persistence.tablesmanager.NewTableManager;
 import com.applaudostudio.weekfivechallangeone.persistence.tablesmanager.ReadMeLatterTableManager;
 
+/***
+ * Content provider for the SQLite database
+ */
 public class NewsProvider extends ContentProvider {
     private static final int NEWS = 1000;
     private static final int READ_ME = 2000;
-    private static final int READ_ME_ID = 2001;
-    private TheGuardianDbHelper dbHelper;
     private int mMatch;
     private NewTableManager mTableNews;
     private ReadMeLatterTableManager mTableReadme;
@@ -23,8 +25,15 @@ public class NewsProvider extends ContentProvider {
     public NewsProvider() {
     }
 
+    /***
+     * delete functions of the database
+     * @param uri uri for the tables
+     * @param selection selection arguments
+     * @param selectionArgs and selection values to search
+     * @return return an int
+     */
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         mMatch = sURIMatcher.match(uri);
         switch (mMatch) {
             case NEWS:
@@ -38,13 +47,19 @@ public class NewsProvider extends ContentProvider {
     }
 
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         // at the given URI.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    /***
+     * Function to insert int the data base for insert each table
+     * @param uri uri to check the table
+     * @param values values to insert
+     * @return null uri
+     */
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         mMatch = sURIMatcher.match(uri);
         switch (mMatch) {
             case NEWS:
@@ -57,16 +72,30 @@ public class NewsProvider extends ContentProvider {
         return null;
     }
 
+    /***
+     * create to setup the connection and the controllers for each table
+     * @return returns true
+     */
     @Override
     public boolean onCreate() {
+        TheGuardianDbHelper dbHelper;
         dbHelper = new TheGuardianDbHelper(getContext());
         mTableNews = new NewTableManager(dbHelper);
         mTableReadme = new ReadMeLatterTableManager(dbHelper);
         return true;
     }
 
+    /***
+     * function to execute selects for the sqllite db
+     * @param uri uri to get the table
+     * @param projection colums for the query, (NULL) is *
+     * @param selection where params
+     * @param selectionArgs arguments for the where
+     * @param sortOrder order of the results
+     * @return a cursor
+     */
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         mMatch = sURIMatcher.match(uri);
         switch (mMatch) {
@@ -79,13 +108,15 @@ public class NewsProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection,
+    public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    /**
+     * Static function to get the data to match the URI
+     */
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-
     static {
         sURIMatcher.addURI(String.valueOf(TheGuardianContact.CONTENT_AUTHORITY), "news", NEWS);
         sURIMatcher.addURI(String.valueOf(TheGuardianContact.CONTENT_AUTHORITY), "readme", READ_ME);

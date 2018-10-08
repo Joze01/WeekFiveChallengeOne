@@ -93,6 +93,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.Select
             mTxtHeadline = itemView.findViewById(R.id.textViewHeadline);
             mImagenDownload = itemView.findViewById(R.id.imageViewThumbnail);
             mItemElements.setOnClickListener(this);
+            //New Callback for delete elements on readme
             mItemElements.setOnLongClickListener(this);
         }
 
@@ -111,7 +112,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.Select
             }
         }
 
-
+        /***
+         * OnLongClick to get the long press click on the view
+         * @param view view as param
+         * @return return true to unable the simple click or false to execute the other click too.
+         */
         @Override
         public boolean onLongClick(View view) {
             switch (view.getId()) {
@@ -157,7 +162,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.Select
      */
     public interface ItemSelectedListener {
         void onClickNewsDetail(ItemNews item);
-
         boolean onLongClickNewDelete(ItemNews item);
     }
 

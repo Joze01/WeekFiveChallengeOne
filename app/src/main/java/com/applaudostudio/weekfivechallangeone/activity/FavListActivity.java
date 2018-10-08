@@ -13,6 +13,10 @@ import com.applaudostudio.weekfivechallangeone.persistence.contract.TheGuardianC
 
 public class FavListActivity extends AppCompatActivity {
 
+    /***
+     * Inflate the fragment for the readme latter list
+     * @param savedInstanceState saved instance
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
