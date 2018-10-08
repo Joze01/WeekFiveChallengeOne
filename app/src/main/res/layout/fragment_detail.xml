@@ -74,11 +74,12 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:clickable="true"
+            app:backgroundTint="@color/colorPrimary"
             android:contentDescription="@null"
             android:src="@drawable/ic_star_fab"
             app:fabSize="auto"
             app:layout_constraintBottom_toBottomOf="@+id/appCompatImageViewHeader"
-            app:layout_constraintEnd_toEndOf="@+id/appCompatImageViewHeader" />>
+            app:layout_constraintEnd_toEndOf="@+id/appCompatImageViewHeader" />
     </android.support.constraint.ConstraintLayout>
 
 

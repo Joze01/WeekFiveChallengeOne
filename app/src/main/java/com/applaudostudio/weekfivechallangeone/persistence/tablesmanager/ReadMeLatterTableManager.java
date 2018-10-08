@@ -12,18 +12,17 @@ public class ReadMeLatterTableManager {
     private TheGuardianDbHelper mHelperDb;
     private SQLiteDatabase mDb;
 
-    public static final String CREATE_TABLE_READ_ME = "CREATE TABLE " + TheGuardianContact.ReadMeLatter.TABLE_NAME + " " +
-            "(" + TheGuardianContact.News.COLUMN_NEW_ID + " TEXT PRIMARY KEY, " +
-            "" + TheGuardianContact.News.COLUMN_NEW_HEAD_LINE + " TEXT NOT NULL, " +
-            "" + TheGuardianContact.News.COLUMN_NEW_BODY_TEXT + " TEXT, " +
-            "" + TheGuardianContact.News.COLUMN_NEW_WEB_URL + " TEXT, " +
-            "" + TheGuardianContact.News.COLUMN_NEW_THUMBNAIL + "TEXT," +
-            "" + TheGuardianContact.News.COLUMN_NEW_CATEGORY + "TEXT )";
+    public static final String CREATE_TABLE_READ_ME = "CREATE TABLE IF NOT EXISTS " + TheGuardianContact.ReadMeLatter.TABLE_NAME + " " +
+            "(" + TheGuardianContact.ReadMeLatter.COLUMN_NEW_ID + " TEXT PRIMARY KEY, " +
+            "" + TheGuardianContact.ReadMeLatter.COLUMN_NEW_HEAD_LINE + " TEXT NOT NULL, " +
+            "" + TheGuardianContact.ReadMeLatter.COLUMN_NEW_BODY_TEXT + " TEXT, " +
+            "" + TheGuardianContact.ReadMeLatter.COLUMN_NEW_WEB_URL + " TEXT, " +
+            "" + TheGuardianContact.ReadMeLatter.COLUMN_NEW_THUMBNAIL + " TEXT," +
+            "" + TheGuardianContact.ReadMeLatter.COLUMN_NEW_CATEGORY + " TEXT )";
 
     public ReadMeLatterTableManager(TheGuardianDbHelper dbHelper) {
         mHelperDb = dbHelper;
     }
-
 
     public boolean addNew(ContentValues values) {
         mDb = mHelperDb.getWritableDatabase();
@@ -32,11 +31,12 @@ public class ReadMeLatterTableManager {
 
     public boolean deleteNews(Uri uri, String where, String[] selectionArgs) {
         mDb = mHelperDb.getWritableDatabase();
-        return mDb.delete(TheGuardianContact.ReadMeLatter.TABLE_NAME, where, selectionArgs) != -1;
+        boolean result= mDb.delete(TheGuardianContact.ReadMeLatter.TABLE_NAME, where, selectionArgs) != -1;
+        return result;
     }
 
-    public Cursor getAllNews(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor getNews(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         mDb = mHelperDb.getReadableDatabase();
-        return mDb.query(TheGuardianContact.ReadMeLatter.TABLE_NAME, projection, selection, selectionArgs, sortOrder,null,null);
+        return mDb.query(TheGuardianContact.ReadMeLatter.TABLE_NAME, projection, selection, selectionArgs, sortOrder, null, null);
     }
 }

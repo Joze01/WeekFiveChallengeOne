@@ -4,4 +4,8 @@
 
 
     <string name="searching">Searching</string>
+
+    <string name="delete_dialog">Delete, Are you sure?</string>
+    <string name="dialogno">No</string>
+    <string name="yesdialog">Yes</string>
 </resources>

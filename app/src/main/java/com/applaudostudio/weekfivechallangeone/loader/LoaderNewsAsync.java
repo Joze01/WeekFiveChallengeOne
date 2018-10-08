@@ -13,6 +13,7 @@ import java.net.URL;
 
 public class LoaderNewsAsync extends AsyncTaskLoader<String> {
     private URL mUrlGenerated;
+
     /***
      * constructor
      * @param context context
@@ -23,6 +24,7 @@ public class LoaderNewsAsync extends AsyncTaskLoader<String> {
         mUrlGenerated = generatedUrl;
         onForceLoad();
     }
+
     /***
      * Load on background function to execute async work
      * @return a string

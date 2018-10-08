@@ -23,6 +23,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -34,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.applaudostudio.weekfivechallangeone.activity.FavListActivity;
 import com.applaudostudio.weekfivechallangeone.R;
 import com.applaudostudio.weekfivechallangeone.activity.DetailActivity;
 import com.applaudostudio.weekfivechallangeone.adapter.NewsListAdapter;
@@ -52,9 +54,9 @@ import java.util.List;
 /**
  * Fragment that displays "news list".
  */
-public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCallbacks, NewsListAdapter.ItemSelectedListener,InternetReceiver.InternetConnectionListener {
+public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCallbacks, NewsListAdapter.ItemSelectedListener, InternetReceiver.InternetConnectionListener, View.OnClickListener {
     public static final String ARG_PAGE = "ARG_PAGE";
-    public static final String ARG_NETWORK = "ARG_NETWORK";
+    public static final String ARG_SEARCHOFLINE = "SEARCHOFLINE";
     public static final String PAGE_COUNTER = "counterPages";
     public static final int MIN_PAGE_COUNT = 6;
     private String mPage;
@@ -67,6 +69,8 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
     private InternetReceiver mInternetReceiver;
     private ContentResolver mContentResolver;
     private boolean mInternetStatus;
+    private FloatingActionButton mFloatButton;
+    private static boolean mOfflineSearch;
 
     public static FeedNewFragment newInstance(String category) {
         Bundle args = new Bundle();
@@ -76,13 +80,19 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         return fragment;
     }
 
+
+    public static FeedNewFragment newInstanceSearchOnline(String category) {
+        Bundle args = new Bundle();
+        args.putString(ARG_PAGE, category);
+        mOfflineSearch = true;
+        FeedNewFragment fragment = new FeedNewFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-
         if (getArguments() != null) {
             mPage = getArguments().getString(ARG_PAGE);
         }
@@ -96,6 +106,7 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         mRecyclerViewNews = v.findViewById(R.id.recyclerNews);
         mProgressLoad = v.findViewById(R.id.progressBarLoading);
         mProgressLoad.setVisibility(View.GONE);
+        mFloatButton = v.findViewById(R.id.floatingListFavButton);
         mCategoryText = mPage;
         return v;
     }
@@ -103,6 +114,8 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mFloatButton.setOnClickListener(this);
+
         mNewsList = new ArrayList<>();
         if (savedInstanceState != null) {
             mPagerCount = savedInstanceState.getInt(PAGE_COUNTER);
@@ -114,11 +127,11 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerViewNews.setLayoutManager(mLayoutManager);
         ConnectionManager connectionManager = new ConnectionManager(getContext());
-        mInternetStatus=connectionManager.isNetworkAvailable();
-        mAdapterNews = new NewsListAdapter(mNewsList, this,mInternetStatus);
+        mInternetStatus = connectionManager.isNetworkAvailable();
+        mAdapterNews = new NewsListAdapter(mNewsList, this, mInternetStatus);
         mRecyclerViewNews.setAdapter(mAdapterNews);
 
-        if (!mInternetStatus){
+        if (!mInternetStatus) {
             getLoaderManager().initLoader(1, null, this);
             getLoaderManager().getLoader(1);
         } else {
@@ -140,13 +153,11 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onResume() {
         super.onResume();
-        mInternetReceiver=new InternetReceiver(this);
+        mInternetReceiver = new InternetReceiver(this);
         IntentFilter intentFilter = new IntentFilter();
         // Add network connectivity change action.
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-
-        getActivity().registerReceiver(mInternetReceiver,  intentFilter);
-
+        getActivity().registerReceiver(mInternetReceiver, intentFilter);
     }
 
     @Override
@@ -162,6 +173,11 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         startActivity(intent);
     }
 
+    @Override
+    public boolean onLongClickNewDelete(ItemNews item) {
+        return true;
+    }
+
 
     private ContentValues valuesContainer(ItemNews item) {
         ContentValues contentValues = new ContentValues();
@@ -169,7 +185,7 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
         contentValues.put(TheGuardianContact.News.COLUMN_NEW_HEAD_LINE, item.getTitle());
         contentValues.put(TheGuardianContact.News.COLUMN_NEW_BODY_TEXT, item.getTextBody());
         contentValues.put(TheGuardianContact.News.COLUMN_NEW_WEB_URL, item.getWebUrl());
-        contentValues.put(TheGuardianContact.News.COLUMN_NEW_THUMBNAIL, item.getWebUrl());
+        contentValues.put(TheGuardianContact.News.COLUMN_NEW_THUMBNAIL, item.getThumbnailUrl());
         contentValues.put(TheGuardianContact.News.COLUMN_NEW_CATEGORY, item.getCategory());
         return contentValues;
     }
@@ -184,7 +200,11 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
                 return new LoaderNewsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_JSON, mCategoryText, mPagerCount, false));
             }
         } else {
-            return new CursorLoader(getActivity(), TheGuardianContact.News.CONTENT_URI, null, TheGuardianContact.News.COLUMN_NEW_CATEGORY+"=?", new String[]{mCategoryText}, null);
+            if (!mOfflineSearch) {
+                return new CursorLoader(getActivity(), TheGuardianContact.News.CONTENT_URI, null, TheGuardianContact.News.COLUMN_NEW_CATEGORY + "=?", new String[]{mCategoryText}, null);
+            } else {
+                return new CursorLoader(getActivity(), TheGuardianContact.News.CONTENT_URI, null, TheGuardianContact.News.COLUMN_NEW_HEAD_LINE + " LIKE ? OR "+TheGuardianContact.News.COLUMN_NEW_BODY_TEXT+" LIKE ?", new String[]{"%" + mCategoryText + "%", "%" + mCategoryText + "%"}, null);
+            }
         }
         return new LoaderNewsAsync(getActivity(), urlGenerator.GenerateURLByElement(UrlManager.ELEMENT_TYPE_JSON, mCategoryText, 0, true));
     }
@@ -215,6 +235,15 @@ public class FeedNewFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onInternetAvailable(boolean status) {
-        mInternetStatus=status;
+        mInternetStatus = status;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.floatingListFavButton:
+                Intent i = new Intent(getActivity(), FavListActivity.class);
+                startActivity(i);
+        }
     }
 }

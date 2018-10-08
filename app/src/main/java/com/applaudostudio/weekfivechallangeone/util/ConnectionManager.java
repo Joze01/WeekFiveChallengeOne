@@ -8,15 +8,15 @@ import android.net.NetworkInfo;
  * Class with the functons to check the internet connection
  */
 public class ConnectionManager {
-
     private Context mContext;
 
-    public ConnectionManager(Context context){
-        mContext=context;
+    public ConnectionManager(Context context) {
+        mContext = context;
     }
-    public boolean isNetworkAvailable(){
+
+    public boolean isNetworkAvailable() {
         ConnectivityManager cm =
-                (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = null;
         if (cm != null) {
             activeNetwork = cm.getActiveNetworkInfo();

@@ -50,11 +50,10 @@ public class DataInterpreter {
     }
 
 
-    public List<ItemNews> cursorToList(Cursor data){
+    public List<ItemNews> cursorToList(Cursor data) {
         List<ItemNews> result = new ArrayList<>();
-
-        if(data.moveToFirst()){
-            do{
+        if (data.moveToFirst()) {
+            do {
                 ItemNews newItem = new ItemNews();
                 newItem.setNewId(data.getString(0));
                 newItem.setTitle(data.getString(1));
@@ -63,10 +62,8 @@ public class DataInterpreter {
                 newItem.setCategory(data.getString(5));
                 newItem.setWebUrl(data.getString(3));
                 result.add(newItem);
-            }while (data.moveToNext());
+            } while (data.moveToNext());
         }
-
-
         return result;
     }
 }

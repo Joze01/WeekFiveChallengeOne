@@ -15,7 +15,7 @@ import java.net.URL;
 /***
  * loader for the images of the detail
  */
-public class LoaderBitMapsAsync extends AsyncTaskLoader<Bitmap>{
+public class LoaderBitMapsAsync extends AsyncTaskLoader<Bitmap> {
     private URL mUrlGenerated;
 
     /***
@@ -27,7 +27,6 @@ public class LoaderBitMapsAsync extends AsyncTaskLoader<Bitmap>{
         super(context);
         mUrlGenerated = generatedUrl;
         onForceLoad();
-
 
 
     }

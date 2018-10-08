@@ -9,13 +9,12 @@ public class UrlManager {
     public static final int ELEMENT_TYPE_JSON = 1;
     public static final int ELEMENT_TYPE_IMAGE = 2;
 
-
     /***
      * Generate  a URL() for the Recycler view, including Pagination and for the images
      * @param elementType  Type JSON or IMAGE
      * @param paramURL string url
      * @param page page param for the JSON
-     * @param firstLoad if the JSON is on firt load
+     * @param firstLoad if the JSON is on first load
      * @return returns URL object
      */
     public URL GenerateURLByElement(int elementType, String paramURL, int page, boolean firstLoad) {

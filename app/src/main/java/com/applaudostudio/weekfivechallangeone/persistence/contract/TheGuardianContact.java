@@ -19,7 +19,6 @@ public class TheGuardianContact {
     public static final String PATH_READ_ME_LATTER = "readme";
 
 
-
     /***
      * table News Elements
      */
@@ -31,7 +30,7 @@ public class TheGuardianContact {
         public static final String COLUMN_NEW_BODY_TEXT = "newBodyText";
         public static final String COLUMN_NEW_WEB_URL = "newWebUrl";
         public static final String COLUMN_NEW_THUMBNAIL = "newThumbnail";
-        public static final String COLUMN_NEW_CATEGORY="newCategory";
+        public static final String COLUMN_NEW_CATEGORY = "newCategory";
     }
 
     /***
@@ -45,6 +44,8 @@ public class TheGuardianContact {
         public static final String COLUMN_NEW_BODY_TEXT = "newBodyText";
         public static final String COLUMN_NEW_WEB_URL = "newWebUrl";
         public static final String COLUMN_NEW_THUMBNAIL = "newThumbnail";
+        public static final String COLUMN_NEW_CATEGORY = "newCategory";
+
     }
 
 }

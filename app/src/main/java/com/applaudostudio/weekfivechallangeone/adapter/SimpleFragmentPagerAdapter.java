@@ -34,7 +34,7 @@ public class SimpleFragmentPagerAdapter extends FragmentStatePagerAdapter implem
 
     /***
      * Constructor
-      * @param fm Fragment manager
+     * @param fm Fragment manager
      */
     public SimpleFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -52,7 +52,7 @@ public class SimpleFragmentPagerAdapter extends FragmentStatePagerAdapter implem
 
     /***
      * count of items
-      * @return returns an int
+     * @return returns an int
      */
     @Override
     public int getCount() {
@@ -67,6 +67,6 @@ public class SimpleFragmentPagerAdapter extends FragmentStatePagerAdapter implem
 
     @Override
     public void onInternetAvailable(boolean status) {
-        mNetworkStatus=status;
+        mNetworkStatus = status;
     }
 }

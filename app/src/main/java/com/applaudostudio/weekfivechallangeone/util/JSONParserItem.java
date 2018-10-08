@@ -18,7 +18,7 @@ public class JSONParserItem {
      * @param jsonString STRING JSON
      * @return returns a list<NewItem>
      */
-    public List<ItemNews> getNewList(String jsonString,String category) {
+    public List<ItemNews> getNewList(String jsonString, String category) {
         List<ItemNews> resultList = new ArrayList<>();
         try {
             JSONObject baseJsonResponse = new JSONObject(jsonString);
@@ -40,7 +40,7 @@ public class JSONParserItem {
                         itemNews.setWebUrl(firstFeature.getString("webUrl"));
                     if (firstFeature.has("id"))
                         itemNews.setNewId(firstFeature.getString("id"));
-                        itemNews.setCategory(category);
+                    itemNews.setCategory(category);
                     resultList.add(itemNews);
                 }
             }

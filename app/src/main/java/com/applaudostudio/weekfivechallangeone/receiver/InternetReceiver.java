@@ -21,8 +21,8 @@ public class InternetReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (checkInternet(context)) {
-            Toast toast = Toast.makeText(context, "NETWORK AVAILABLE", Toast.LENGTH_LONG);
-            toast.show();
+            //Toast toast = Toast.makeText(context, "NETWORK AVAILABLE", Toast.LENGTH_LONG);
+            //toast.show();
             mInternetContract.onInternetAvailable(true);
         } else {
             Toast toast = Toast.makeText(context, "NETWORK UNAVAILABLE", Toast.LENGTH_LONG);

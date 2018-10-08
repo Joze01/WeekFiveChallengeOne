@@ -13,13 +13,10 @@ import com.applaudostudio.weekfivechallangeone.persistence.tablesmanager.ReadMeL
 
 public class NewsProvider extends ContentProvider {
     private static final int NEWS = 1000;
-
     private static final int READ_ME = 2000;
     private static final int READ_ME_ID = 2001;
-
     private TheGuardianDbHelper dbHelper;
     private int mMatch;
-
     private NewTableManager mTableNews;
     private ReadMeLatterTableManager mTableReadme;
 
@@ -31,7 +28,10 @@ public class NewsProvider extends ContentProvider {
         mMatch = sURIMatcher.match(uri);
         switch (mMatch) {
             case NEWS:
-                mTableNews.deleteNews(uri,selection,selectionArgs);
+                mTableNews.deleteNews(uri, selection, selectionArgs);
+                break;
+            case READ_ME:
+                mTableReadme.deleteNews(uri, selection, selectionArgs);
                 break;
         }
         return 1;
@@ -71,13 +71,10 @@ public class NewsProvider extends ContentProvider {
         mMatch = sURIMatcher.match(uri);
         switch (mMatch) {
             case NEWS:
-                return mTableNews.getAllNews(projection,selection,selectionArgs,sortOrder);
+                return mTableNews.getNews(projection, selection, selectionArgs, sortOrder);
             case READ_ME:
-                return mTableReadme.getAllNews();
-            case READ_ME_ID:
-                return mTableReadme.getANews(selectionArgs[0]);
+                return mTableReadme.getNews(projection, selection, selectionArgs, sortOrder);
         }
-
         return null;
     }
 
@@ -87,7 +84,6 @@ public class NewsProvider extends ContentProvider {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
@@ -95,6 +91,5 @@ public class NewsProvider extends ContentProvider {
         sURIMatcher.addURI(String.valueOf(TheGuardianContact.CONTENT_AUTHORITY), "readme", READ_ME);
         sURIMatcher.addURI(String.valueOf(TheGuardianContact.CONTENT_AUTHORITY), "readme/#", READ_ME_ID);
     }
-
 
 }

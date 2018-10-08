@@ -17,6 +17,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:clickable="true"
     android:padding="0dp">
@@ -28,7 +29,20 @@
         android:background="@color/colorRecycler"
         />
 
-
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingListFavButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        app:backgroundTint="@color/colorPrimary"
+        android:layout_marginBottom="26dp"
+        android:layout_marginEnd="21dp"
+        android:padding="0dp"
+        android:clickable="true"
+        android:contentDescription="@null"
+        android:focusable="true"
+        android:src="@drawable/ic_list_pink_star" />
 
 <FrameLayout
     android:id="@+id/progressBarLoading"
@@ -44,7 +58,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="#FFFF" />
-
 </FrameLayout>
 
 

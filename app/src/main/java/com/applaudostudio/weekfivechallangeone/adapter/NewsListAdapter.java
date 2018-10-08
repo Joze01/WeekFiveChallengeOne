@@ -22,7 +22,7 @@ import java.util.List;
 /***
  * Adapter for the recycler view
  */
-public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsViewHolder> {
+public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.SelectableViewHolder> {
     private List<ItemNews> mDataSet;
     private final ItemSelectedListener mCallback;
     private boolean mInternetStatus;
@@ -32,17 +32,19 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
      * @param mDataSet Data with the news items
      * @param callback callback for the item selected.
      */
-    public NewsListAdapter(List<ItemNews> mDataSet, ItemSelectedListener callback,boolean intenertStatus) {
+    public NewsListAdapter(List<ItemNews> mDataSet, ItemSelectedListener callback, boolean internetStatus) {
         this.mDataSet = mDataSet;
         mCallback = callback;
-        mInternetStatus =intenertStatus;
+        mInternetStatus = internetStatus;
+
     }
 
 
-    public void setData(List<ItemNews> mDataSet){
+    public void setData(List<ItemNews> mDataSet) {
         this.mDataSet = mDataSet;
         this.notifyDataSetChanged();
     }
+
     /***
      * Constructor for the view Holder of the recycler view
      * @param parent the parent viewGroup
@@ -51,9 +53,9 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
      */
     @NonNull
     @Override
-    public NewsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SelectableViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_newslist, parent, false);
-        return new NewsViewHolder(view);
+        return new SelectableViewHolder(view);
     }
 
     /***
@@ -62,7 +64,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
      * @param i item index
      */
     @Override
-    public void onBindViewHolder(@NonNull NewsListAdapter.NewsViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull NewsListAdapter.SelectableViewHolder viewHolder, int i) {
         viewHolder.bindData(mDataSet.get(i));
     }
 
@@ -79,17 +81,19 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
     /***
      * Class for the news View holder
      */
-    class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class SelectableViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private ImageView mImagenDownload;
         private TextView mTxtHeadline;
         private ConstraintLayout mItemElements;
+
         //private Bitmap mImagenMap;
-        NewsViewHolder(@NonNull View itemView) {
+        SelectableViewHolder(@NonNull View itemView) {
             super(itemView);
             mItemElements = itemView.findViewById(R.id.containerList);
             mTxtHeadline = itemView.findViewById(R.id.textViewHeadline);
             mImagenDownload = itemView.findViewById(R.id.imageViewThumbnail);
             mItemElements.setOnClickListener(this);
+            mItemElements.setOnLongClickListener(this);
         }
 
         /***
@@ -101,11 +105,22 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
             switch (view.getId()) {
                 case R.id.containerList:
                     if (mCallback != null) {
-                        //mDataSet.get(getAdapterPosition()).setImageMap(mImagenMap);
                         mCallback.onClickNewsDetail(mDataSet.get(getAdapterPosition()));
                     }
                     break;
             }
+        }
+
+
+        @Override
+        public boolean onLongClick(View view) {
+            switch (view.getId()) {
+                case R.id.containerList:
+                    if (mCallback != null) {
+                        mCallback.onLongClickNewDelete(mDataSet.get(getAdapterPosition()));
+                    }
+            }
+            return true;
         }
 
         /***
@@ -115,8 +130,9 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
         private void bindData(ItemNews item) {
             mTxtHeadline.setText(item.getTitle());
             mImagenDownload.setImageResource(R.drawable.ic_launcher_background);
-            if(mInternetStatus)
-            new AsyncLoadImage().execute(item.getThumbnailUrl());
+            if (mInternetStatus) {
+                new AsyncLoadImage().execute(item.getThumbnailUrl());
+            }
         }
 
         //Async task to load each image
@@ -124,8 +140,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
             @Override
             protected Bitmap doInBackground(String... strings) {
                 UrlManager urlManager = new UrlManager();
-                GuardianApiClient client = new GuardianApiClient();
-                DataInterpreter interpreter = new DataInterpreter();
+                GuardianApiClient client = new GuardianApiClient();DataInterpreter interpreter = new DataInterpreter();
                 return interpreter.streamToBitMap(client.makeHttpRequest(urlManager.GenerateURLByElement(UrlManager.ELEMENT_TYPE_IMAGE, strings[0], 0, false)));
             }
 
@@ -142,6 +157,8 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
      */
     public interface ItemSelectedListener {
         void onClickNewsDetail(ItemNews item);
+
+        boolean onLongClickNewDelete(ItemNews item);
     }
 
 

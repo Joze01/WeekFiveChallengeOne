@@ -38,9 +38,9 @@ public class NewTableManager {
         return mDb.delete(TheGuardianContact.News.TABLE_NAME, where, selectionArgs) != -1;
     }
 
-    public Cursor getAllNews(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor getNews(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         mDb = mHelperDb.getReadableDatabase();
-        return mDb.query(TheGuardianContact.News.TABLE_NAME, projection, selection, selectionArgs, sortOrder,null,null);
+        return mDb.query(TheGuardianContact.News.TABLE_NAME, projection, selection, selectionArgs, sortOrder, null, null);
     }
 
 
