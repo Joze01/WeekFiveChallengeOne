@@ -89,7 +89,6 @@ public class NewsProvider extends ContentProvider {
     static {
         sURIMatcher.addURI(String.valueOf(TheGuardianContact.CONTENT_AUTHORITY), "news", NEWS);
         sURIMatcher.addURI(String.valueOf(TheGuardianContact.CONTENT_AUTHORITY), "readme", READ_ME);
-        sURIMatcher.addURI(String.valueOf(TheGuardianContact.CONTENT_AUTHORITY), "readme/#", READ_ME_ID);
     }
 
 }
