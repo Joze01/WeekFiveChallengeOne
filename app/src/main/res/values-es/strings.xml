@@ -1,10 +1,7 @@
 <resources>
     <string name="app_name">The Guardian</string>
     <string name="search">Buscar</string>
-
-
     <string name="searching">Buscando</string>
-
     <string name="delete_dialog">Borrar, Esta seguro?</string>
     <string name="dialogno">No</string>
     <string name="yesdialog">Si</string>
