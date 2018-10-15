@@ -1,15 +1,13 @@
 package com.applaudostudio.weekfivechallangeone.activity;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import com.applaudostudio.weekfivechallangeone.R;
-import com.applaudostudio.weekfivechallangeone.fragment.DetailFragment;
 import com.applaudostudio.weekfivechallangeone.fragment.ReadMeLatterFragment;
-import com.applaudostudio.weekfivechallangeone.persistence.contract.TheGuardianContact;
 
 public class FavListActivity extends AppCompatActivity {
 
@@ -27,4 +25,5 @@ public class FavListActivity extends AppCompatActivity {
         transaction.replace(R.id.containerFavs, fragment);
         transaction.commit();
     }
+
 }

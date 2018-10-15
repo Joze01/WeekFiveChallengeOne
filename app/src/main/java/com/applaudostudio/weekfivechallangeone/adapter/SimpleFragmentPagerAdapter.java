@@ -15,7 +15,6 @@
  */
 package com.applaudostudio.weekfivechallangeone.adapter;
 
-import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;

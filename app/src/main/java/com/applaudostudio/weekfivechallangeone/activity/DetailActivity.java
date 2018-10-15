@@ -1,15 +1,13 @@
 package com.applaudostudio.weekfivechallangeone.activity;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.ImageView;
 
 import com.applaudostudio.weekfivechallangeone.R;
 import com.applaudostudio.weekfivechallangeone.fragment.DetailFragment;
-import com.applaudostudio.weekfivechallangeone.fragment.FeedNewFragment;
 import com.applaudostudio.weekfivechallangeone.model.ItemNews;
 
 /***
